@@ -68,9 +68,7 @@ This project will continuously evolve by integrating multiple Machine Learning a
 
 ## Frontend
 
-- HTML5
-- CSS3
-- JavaScript
+-React Js
 
 ## Backend
 
