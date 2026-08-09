@@ -120,7 +120,7 @@ Customer Segments
       ↓
 Personalized Recommendations
 Phase 2 — Personalized Recommendation System
-
+```
 The recommendation engine will use customer behavior and purchase history to recommend relevant products.
 
 Potential signals include:
@@ -176,6 +176,7 @@ Development Tools
 PyCharm
 Git
 GitHub
+```
 📂 Project Structure
 AI-Powered-E-Commerce-Recommendation-System/
 
