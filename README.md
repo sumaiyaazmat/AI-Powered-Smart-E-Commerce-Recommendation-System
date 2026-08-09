@@ -91,7 +91,7 @@ The Admin Portal will be developed as a separate **Flask-based analytics dashboa
 - Popular Products by Cluster
 - Recommendation Statistics
 - ML Model Insights
-- Visualization of Recommendation Results
+- Recommendation Result Visualizations
 
 ---
 
@@ -105,8 +105,6 @@ Machine Learning is the core intelligent component of this project.
 
 Customer behavior and purchasing patterns will be analyzed to group customers into meaningful segments.
 
-Example:
-
 ```text
 Customer Data
       ↓
@@ -119,65 +117,91 @@ K-Means Clustering
 Customer Segments
       ↓
 Personalized Recommendations
-Phase 2 — Personalized Recommendation System
 ```
+
+---
+
+## Phase 2 — Personalized Recommendation System
+
 The recommendation engine will use customer behavior and purchase history to recommend relevant products.
 
 Potential signals include:
 
-Product Views
-Cart Additions
-Purchases
-Product Categories
-Purchase Frequency
-Customer Segments
+- Product Views
+- Cart Additions
+- Purchases
+- Product Categories
+- Purchase Frequency
+- Customer Segments
 
 The recommendation results will be displayed through the customer-facing website.
 
-🔮 Future Machine Learning Enhancements
-Association Rule Mining (Apriori)
-Collaborative Filtering
-Content-Based Recommendation
-Hybrid Recommendation System
-Sales Forecasting
-Customer Purchase Prediction
-Product Popularity Analysis
-Review Sentiment Analysis
-🛠️ Tech Stack
-Frontend
-React.js
-JavaScript
-HTML
-CSS
-Vite
-Backend
-Python
-FastAPI
-Pydantic
-REST APIs
-Admin Dashboard
-Python
-Flask
-HTML
-CSS
-JavaScript
-Chart-based Data Visualization
-Database
-MySQL
-SQL
-Machine Learning
-Python
-NumPy
-Pandas
-Scikit-learn
-Matplotlib
-Joblib
-Development Tools
-PyCharm
-Git
-GitHub
-```
-📂 Project Structure
+---
+
+## 🔮 Future Machine Learning Enhancements
+
+- Association Rule Mining (Apriori)
+- Collaborative Filtering
+- Content-Based Recommendation
+- Hybrid Recommendation System
+- Sales Forecasting
+- Customer Purchase Prediction
+- Product Popularity Analysis
+- Review Sentiment Analysis
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+
+- React.js
+- JavaScript
+- HTML
+- CSS
+- Vite
+
+## Backend
+
+- Python
+- FastAPI
+- Pydantic
+- REST APIs
+
+## Admin Dashboard
+
+- Python
+- Flask
+- HTML
+- CSS
+- JavaScript
+- Chart-based Data Visualization
+
+## Database
+
+- MySQL
+- SQL
+
+## Machine Learning
+
+- Python
+- NumPy
+- Pandas
+- Scikit-learn
+- Matplotlib
+- Joblib
+
+## Development Tools
+
+- PyCharm
+- Git
+- GitHub
+
+---
+
+# 📂 Project Structure
+
+```text
 AI-Powered-E-Commerce-Recommendation-System/
 
 ├── frontend/
@@ -213,10 +237,15 @@ AI-Powered-E-Commerce-Recommendation-System/
 ├── requirements.txt
 ├── .gitignore
 └── LICENSE
+```
 
-The project structure will continue to evolve as backend, machine learning, recommendation, and analytics components are implemented.
+> The project structure will continue to evolve as backend, machine learning, recommendation, and analytics components are implemented.
 
-🔄 System Architecture
+---
+
+# 🔄 System Architecture
+
+```text
                     CUSTOMER
                        │
                        ▼
@@ -256,30 +285,40 @@ The project structure will continue to evolve as backend, machine learning, reco
               │ Product Analytics       │
               │ ML Visualizations       │
               └─────────────────────────┘
-📅 Development Roadmap
- Project Planning
- Repository Setup
- Dataset Collection
- Initial Database / SQL Work
- Frontend Development
- MySQL Backend Integration
- FastAPI Backend Setup
- Product APIs
- User Authentication
- Customer ID Management
- Shopping Cart
- Checkout & Order Management
- Customer Behavior Tracking
- K-Means Customer Segmentation
- Recommendation Engine
- Personalized Recommendations
- In-App Notifications
- Flask Admin Dashboard
- Analytics & ML Visualizations
- Testing
- Deployment
-🧠 Customer Recommendation Flow
-Customer Signup/Login
+```
+
+---
+
+# 📅 Development Roadmap
+
+- [x] Project Planning
+- [x] Repository Setup
+- [x] Dataset Collection
+- [x] Initial Database / SQL Work
+- [x] Frontend Development
+- [ ] MySQL Backend Integration
+- [ ] FastAPI Backend Setup
+- [ ] Product APIs
+- [ ] User Authentication
+- [ ] Customer ID Management
+- [ ] Shopping Cart
+- [ ] Checkout & Order Management
+- [ ] Customer Behavior Tracking
+- [ ] K-Means Customer Segmentation
+- [ ] Recommendation Engine
+- [ ] Personalized Recommendations
+- [ ] In-App Notifications
+- [ ] Flask Admin Dashboard
+- [ ] Analytics & ML Visualizations
+- [ ] Testing
+- [ ] Deployment
+
+---
+
+# 🧠 Customer Recommendation Flow
+
+```text
+Customer Signup / Login
         ↓
 Customer ID Assigned
         ↓
@@ -300,60 +339,72 @@ Recommended Products
 "Recommended For You"
         ↓
 In-App Notification
-🔐 Authentication & Security
+```
+
+---
+
+# 🔐 Authentication & Security
 
 The platform will include:
 
-Customer Registration
-Customer Login
-Secure Password Hashing
-Customer Roles
-Protected Admin Access
-Backend API Authentication
-Environment Variables for Sensitive Credentials
+- Customer Registration
+- Customer Login
+- Secure Password Hashing
+- Customer Roles
+- Protected Admin Access
+- Backend API Authentication
+- Environment Variables for Sensitive Credentials
 
 Admin access will be restricted to authorized users and will not be available through normal customer registration.
 
-📊 Analytics & Visualization
+---
+
+# 📊 Analytics & Visualization
 
 The Admin Dashboard will present meaningful business and Machine Learning insights through:
 
-Sales Charts
-Customer Statistics
-Product Statistics
-Category Analysis
-Order Analytics
-Customer Cluster Visualizations
-Recommendation Statistics
-ML Model Results
+- Sales Charts
+- Customer Statistics
+- Product Statistics
+- Category Analysis
+- Order Analytics
+- Customer Cluster Visualizations
+- Recommendation Statistics
+- ML Model Results
 
 The dashboard will follow a similar approach to previous Machine Learning projects, where model results, statistics, and visualizations are presented through a web interface.
 
-📚 Learning Goals
+---
+
+# 📚 Learning Goals
 
 This project is designed to strengthen my practical knowledge in:
 
-Machine Learning
-Recommendation Systems
-Customer Segmentation
-K-Means Clustering
-FastAPI Development
-Flask Development
-REST API Design
-MySQL & Database Design
-React Development
-Full-Stack Development
-Model Deployment
-Data Analysis
-Data Visualization
-Software Engineering
-Git & GitHub Best Practices
-🚀 Future Vision
+- Machine Learning
+- Recommendation Systems
+- Customer Segmentation
+- K-Means Clustering
+- FastAPI Development
+- Flask Development
+- REST API Design
+- MySQL & Database Design
+- React Development
+- Full-Stack Development
+- Model Deployment
+- Data Analysis
+- Data Visualization
+- Software Engineering
+- Git & GitHub Best Practices
 
-The long-term goal is to transform this project into a production-style AI-powered e-commerce platform capable of providing intelligent and personalized shopping experiences.
+---
+
+# 🚀 Future Vision
+
+The long-term goal is to transform this project into a **production-style AI-powered e-commerce platform** capable of providing intelligent and personalized shopping experiences.
 
 The platform will combine:
 
+```text
 E-Commerce
      +
 Machine Learning
@@ -363,11 +414,14 @@ Recommendation Systems
 Customer Analytics
      +
 Business Intelligence
+```
 
 to create a data-driven and intelligent shopping platform.
 
-⭐ Project
+---
 
-This project is part of my Machine Learning learning journey, where I am continuously applying ML concepts to real-world software projects and gradually expanding them into complete AI-powered applications.
+# ⭐ Project
+
+This project is part of my **Machine Learning learning journey**, where I am continuously applying ML concepts to real-world software projects and gradually expanding them into complete AI-powered applications.
 
 ⭐ If you like this project, consider giving it a star and following my Machine Learning journey as I build this project step by step.
