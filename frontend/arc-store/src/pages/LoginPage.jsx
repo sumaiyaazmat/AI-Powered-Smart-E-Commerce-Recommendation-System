@@ -15,15 +15,61 @@ export default function LoginPage() {
   const { showToast } = useToast();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    await login({ email, password });
-    setLoading(false);
-    showToast(`Welcome back${email ? ', ' + email.split('@')[0] : ''}.`);
-    navigate('/');
-  };
 
+
+//
+//  const handleSubmit = async (e) => {
+//   e.preventDefault();
+//   setLoading(true);
+//
+//   try {
+//     const loggedInUser = await login({
+//       email,
+//       password,
+//     });
+//
+//     showToast(
+//       `Welcome back, ${loggedInUser.name || email.split('@')[0]}.`
+//     );
+//
+//     navigate('/');
+//   } catch (error) {
+//     showToast(error.message || 'Login failed');
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+
+  setLoading(true);
+
+  try {
+    console.log("Calling login API...");
+
+    const loggedInUser = await login({
+      email,
+      password,
+    });
+
+    console.log("LOGIN API SUCCESS:", loggedInUser);
+
+    showToast(
+      `Welcome back, ${loggedInUser.name || email.split('@')[0]}.`
+    );
+
+    navigate('/');
+  } catch (error) {
+    console.error("LOGIN API ERROR:", error);
+
+    showToast(error.message || 'Login failed');
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="container auth-page">
       <motion.div
@@ -34,9 +80,7 @@ export default function LoginPage() {
       >
         <h1>Welcome back</h1>
         <p className="auth-card__sub">Log in to track orders and pick up your cart where you left off.</p>
-        <p className="auth-card__notice">
-          Frontend demo — no account is created on a server yet. This form is wired for a future backend.
-        </p>
+      
 
         <form onSubmit={handleSubmit}>
           <label className="field">
@@ -63,9 +107,18 @@ export default function LoginPage() {
             <a href="#" className="auth-card__forgot">Forgot password?</a>
           </div>
 
-          <Button type="submit" variant="primary" size="lg" className="w-full" icon={LogIn} disabled={loading}>
-            {loading ? 'Logging in…' : 'Login'}
-          </Button>
+ <button
+  type="button"
+  className="btn btn--primary btn--lg w-full"
+  onClick={() => {
+    console.log("🔥 LOGIN BUTTON CLICKED DIRECTLY");
+    handleSubmit({
+      preventDefault: () => {},
+    });
+  }}
+>
+  {loading ? 'Logging in…' : 'Login'}
+</button>
         </form>
 
         <p className="auth-card__switch">

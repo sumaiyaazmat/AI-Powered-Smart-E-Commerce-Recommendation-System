@@ -17,18 +17,43 @@ export default function SignupPage() {
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (form.password !== form.confirm) {
-      setError('Passwords do not match.');
-      return;
-    }
-    setError('');
-    setLoading(true);
-    await signup(form);
-    setLoading(false);
+  e.preventDefault();
+
+  if (form.password !== form.confirm) {
+    setError('Passwords do not match.');
+    return;
+  }
+
+  setError('');
+  setLoading(true);
+
+  try {
+    console.log('SIGNUP BUTTON CLICKED');
+    console.log('SIGNUP DATA:', {
+      name: form.name,
+      email: form.email,
+    });
+
+    const newUser = await signup({
+      name: form.name,
+      email: form.email,
+      password: form.password,
+    });
+
+    console.log('SIGNUP API SUCCESS:', newUser);
+
     showToast('Account created. Welcome to ARC.');
+
     navigate('/');
-  };
+  } catch (error) {
+    console.error('SIGNUP API ERROR:', error);
+
+    setError(error.message || 'Unable to create account.');
+    showToast(error.message || 'Signup failed');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="container auth-page">
@@ -38,11 +63,9 @@ export default function SignupPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <h1>Create your account</h1>
-        <p className="auth-card__sub">Save items, speed through checkout, track every order.</p>
         <p className="auth-card__notice">
-          Frontend demo — no account is created on a server yet. This form is wired for a future backend.
-        </p>
+  Create an account to save items, speed through checkout, and track your orders.
+</p>
 
         <form onSubmit={handleSubmit}>
           <label className="field">

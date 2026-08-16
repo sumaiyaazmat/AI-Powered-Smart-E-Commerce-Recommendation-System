@@ -1,8 +1,6 @@
 import { createContext, useContext, useMemo, useState } from 'react';
+import { apiRequest } from '../services/api';
 
-// Frontend-only placeholder. No requests are made anywhere here — this exists
-// so pages/components have a real shape to code against. Swap the bodies of
-// login/signup for real API calls once auth endpoints exist.
 const AuthContext = createContext(null);
 const STORAGE_KEY = 'arc_user_v1';
 
@@ -20,19 +18,67 @@ export function AuthProvider({ children }) {
     () => ({
       user,
       isAuthenticated: !!user,
-      login: async ({ email }) => {
-        // Placeholder: pretend success and store a minimal profile locally.
-        const fakeUser = { name: email.split('@')[0], email };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(fakeUser));
-        setUser(fakeUser);
-        return fakeUser;
+
+      // ============================
+      // LOGIN
+      // ============================
+      login: async ({ email, password }) => {
+        const data = await apiRequest('/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        });
+
+        const loggedInUser = {
+          customerId: data.Customer_ID,
+          name: data.full_name,
+          email: data.email,
+        };
+
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(loggedInUser)
+        );
+
+        setUser(loggedInUser);
+
+        return loggedInUser;
       },
-      signup: async ({ name, email }) => {
-        const fakeUser = { name, email };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(fakeUser));
-        setUser(fakeUser);
-        return fakeUser;
+
+      // ============================
+      // SIGNUP
+      // ============================
+      signup: async ({ name, email, password }) => {
+        const data = await apiRequest('/auth/signup', {
+          method: 'POST',
+          body: JSON.stringify({
+            full_name: name,
+            email,
+            password,
+          }),
+        });
+
+        const newUser = {
+          customerId: data.Customer_ID,
+          name: data.full_name,
+          email: data.email,
+        };
+
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(newUser)
+        );
+
+        setUser(newUser);
+
+        return newUser;
       },
+
+      // ============================
+      // LOGOUT
+      // ============================
       logout: () => {
         localStorage.removeItem(STORAGE_KEY);
         setUser(null);
@@ -41,7 +87,11 @@ export function AuthProvider({ children }) {
     [user]
   );
 
-  return <AuthContext.Provider value={api}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={api}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export const useAuth = () => useContext(AuthContext);

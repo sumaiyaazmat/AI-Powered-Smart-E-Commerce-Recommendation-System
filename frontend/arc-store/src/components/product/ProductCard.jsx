@@ -18,12 +18,27 @@ export default function ProductCard({ product }) {
   const finalPrice = getDiscountedPrice(product);
   const wishlisted = isWishlisted(product.id);
 
-  const handleAddToCart = (e) => {
-    e.preventDefault();
-    addItem(product, 1);
-    showToast('Product added to your cart.');
-  };
+  // const handleAddToCart = (e) => {
+  //   e.preventDefault();
+  //   addItem(product, 1);
+  //   showToast('Product added to your cart.');
+  // };
+const handleAddToCart = async (e) => {
+  e.preventDefault();
 
+  try {
+    await addItem(product, 1);
+
+    showToast('Product successfully added to your cart.');
+  } catch (error) {
+    console.error('ADD TO CART FAILED:', error);
+
+    showToast(
+      'Product added to cart locally. Backend connection failed.',
+      'info'
+    );
+  }
+};
   const handleWishlist = (e) => {
     e.preventDefault();
     toggle(product.id);
