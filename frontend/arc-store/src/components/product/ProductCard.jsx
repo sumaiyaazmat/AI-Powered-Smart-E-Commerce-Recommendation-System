@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Heart, ShoppingCart, Eye } from 'lucide-react';
 import RatingStars from '../ui/RatingStars';
 import ProductBadge, { PriceTag } from '../ui/ProductBadge';
-import { getDiscountedPrice } from '../../data/products';
+
 import { useCart } from '../../context/CartContext';
 import { useToast } from '../../context/ToastContext';
 import { useWishlist } from '../../hooks/useWishlist';
@@ -15,7 +15,7 @@ export default function ProductCard({ product }) {
   const { showToast } = useToast();
   const { isWishlisted, toggle } = useWishlist();
   const [quickViewOpen, setQuickViewOpen] = useState(false);
-  const finalPrice = getDiscountedPrice(product);
+const finalPrice = product.price;
   const wishlisted = isWishlisted(product.id);
 
   // const handleAddToCart = (e) => {

@@ -10,7 +10,7 @@ from app.database.models import (
 )
 
 from app.database.schema.cart import (
-   CartItemCreate,
+    CartItemCreate,
     CartItemUpdate,
     CartItemResponse
 )
@@ -21,21 +21,41 @@ router = APIRouter(
 )
 
 
+# ==========================================================
+# HELPER: BUILD CART RESPONSE
+# ==========================================================
 
+def build_cart_response(cart_item, product):
+    return {
+        "Cart_Item_ID": cart_item.Cart_Item_ID,
+        "Customer_ID": cart_item.Customer_ID,
+        "Product_ID": cart_item.Product_ID,
+        "Quantity": cart_item.Quantity,
+
+        "Product_Name": product.Product_Name,
+        "Image_URL": product.Image_URL,
+        "Price": product.Price,
+    }
 
 
 # ==========================================================
 # ADD TO CART
 # ==========================================================
 
-@router.post("/", response_model=CartItemResponse)
+@router.post(
+    "/",
+    response_model=CartItemResponse
+)
 def add_to_cart(
     customer_id: int,
     cart_data: CartItemCreate,
     db: Session = Depends(get_db)
 ):
 
+    # ------------------------------------------------------
     # Check customer
+    # ------------------------------------------------------
+
     customer = db.query(Customer).filter(
         Customer.Customer_ID == customer_id
     ).first()
@@ -46,7 +66,10 @@ def add_to_cart(
             detail="Customer not found"
         )
 
+    # ------------------------------------------------------
     # Check product
+    # ------------------------------------------------------
+
     product = db.query(Product).filter(
         Product.Product_ID == cart_data.Product_ID
     ).first()
@@ -57,14 +80,20 @@ def add_to_cart(
             detail="Product not found"
         )
 
+    # ------------------------------------------------------
     # Check stock
+    # ------------------------------------------------------
+
     if product.Stock < cart_data.Quantity:
         raise HTTPException(
             status_code=400,
             detail="Not enough stock available"
         )
 
-    # Check if product already exists in customer's cart
+    # ------------------------------------------------------
+    # Check if product already exists in cart
+    # ------------------------------------------------------
+
     existing_item = db.query(CartItem).filter(
         CartItem.Customer_ID == customer_id,
         CartItem.Product_ID == cart_data.Product_ID
@@ -72,7 +101,10 @@ def add_to_cart(
 
     if existing_item:
 
-        new_quantity = existing_item.Quantity + cart_data.Quantity
+        new_quantity = (
+            existing_item.Quantity +
+            cart_data.Quantity
+        )
 
         if product.Stock < new_quantity:
             raise HTTPException(
@@ -85,9 +117,15 @@ def add_to_cart(
         db.commit()
         db.refresh(existing_item)
 
-        return existing_item
+        return build_cart_response(
+            existing_item,
+            product
+        )
 
+    # ------------------------------------------------------
     # Create new cart item
+    # ------------------------------------------------------
+
     new_item = CartItem(
         Customer_ID=customer_id,
         Product_ID=cart_data.Product_ID,
@@ -98,7 +136,10 @@ def add_to_cart(
     db.commit()
     db.refresh(new_item)
 
-    return new_item
+    return build_cart_response(
+        new_item,
+        product
+    )
 
 
 # ==========================================================
@@ -114,6 +155,10 @@ def get_cart(
     db: Session = Depends(get_db)
 ):
 
+    # ------------------------------------------------------
+    # Check customer
+    # ------------------------------------------------------
+
     customer = db.query(Customer).filter(
         Customer.Customer_ID == customer_id
     ).first()
@@ -124,18 +169,47 @@ def get_cart(
             detail="Customer not found"
         )
 
+    # ------------------------------------------------------
+    # Get cart items
+    # ------------------------------------------------------
+
     cart_items = db.query(CartItem).filter(
         CartItem.Customer_ID == customer_id
     ).all()
 
-    return cart_items
+    result = []
+
+    # ------------------------------------------------------
+    # Get product information for each cart item
+    # ------------------------------------------------------
+
+    for cart_item in cart_items:
+
+        product = db.query(Product).filter(
+            Product.Product_ID == cart_item.Product_ID
+        ).first()
+
+        if not product:
+            continue
+
+        result.append(
+            build_cart_response(
+                cart_item,
+                product
+            )
+        )
+
+    return result
 
 
 # ==========================================================
 # UPDATE CART QUANTITY
 # ==========================================================
 
-@router.put("/{cart_item_id}")
+@router.put(
+    "/{cart_item_id}",
+    response_model=CartItemResponse
+)
 def update_cart_quantity(
     cart_item_id: int,
     customer_id: int,
@@ -154,6 +228,10 @@ def update_cart_quantity(
             detail="Cart item not found"
         )
 
+    # ------------------------------------------------------
+    # Get product
+    # ------------------------------------------------------
+
     product = db.query(Product).filter(
         Product.Product_ID == cart_item.Product_ID
     ).first()
@@ -164,18 +242,29 @@ def update_cart_quantity(
             detail="Product not found"
         )
 
+    # ------------------------------------------------------
+    # Check stock
+    # ------------------------------------------------------
+
     if product.Stock < cart_data.Quantity:
         raise HTTPException(
             status_code=400,
             detail="Not enough stock available"
         )
 
+    # ------------------------------------------------------
+    # Update quantity
+    # ------------------------------------------------------
+
     cart_item.Quantity = cart_data.Quantity
 
     db.commit()
     db.refresh(cart_item)
 
-    return cart_item
+    return build_cart_response(
+        cart_item,
+        product
+    )
 
 
 # ==========================================================
