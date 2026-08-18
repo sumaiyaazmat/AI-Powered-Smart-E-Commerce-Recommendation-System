@@ -2,8 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
-from app.database.models import Transaction, Customer
-
+from app.database.models import (
+    Customer,
+    Transaction,
+    Product
+)
 
 router = APIRouter(
     prefix="/transactions",
@@ -16,12 +19,15 @@ router = APIRouter(
 # ==========================================================
 
 @router.get("/{customer_id}")
-def get_customer_transactions(
+def get_transaction_history(
     customer_id: int,
     db: Session = Depends(get_db)
 ):
 
-    # Check customer
+    # ------------------------------------------------------
+    # 1. CHECK CUSTOMER
+    # ------------------------------------------------------
+
     customer = db.query(Customer).filter(
         Customer.Customer_ID == customer_id
     ).first()
@@ -32,33 +38,78 @@ def get_customer_transactions(
             detail="Customer not found"
         )
 
-    # Get transactions
+    # ------------------------------------------------------
+    # 2. GET CUSTOMER TRANSACTIONS
+    # ------------------------------------------------------
+
     transactions = db.query(Transaction).filter(
         Transaction.Customer_ID == customer_id
     ).order_by(
         Transaction.Order_Date.desc()
     ).all()
 
-    return transactions
+    # ------------------------------------------------------
+    # 3. BUILD RESPONSE
+    # ------------------------------------------------------
 
-# ==========================================================
-# GET SINGLE TRANSACTION
-# ==========================================================
+    result = []
 
-@router.get("/detail/{transaction_id}")
-def get_transaction(
-    transaction_id: str,
-    db: Session = Depends(get_db)
-):
+    for transaction in transactions:
 
-    transaction = db.query(Transaction).filter(
-        Transaction.Transaction_ID == transaction_id
-    ).first()
+        product = db.query(Product).filter(
+            Product.Product_ID == transaction.Product_ID
+        ).first()
 
-    if not transaction:
-        raise HTTPException(
-            status_code=404,
-            detail="Transaction not found"
-        )
+        result.append({
+            "Transaction_ID": transaction.Transaction_ID,
+            "Customer_ID": transaction.Customer_ID,
+            "Product_ID": transaction.Product_ID,
 
-    return transaction
+            "Product_Name": (
+                product.Product_Name
+                if product else None
+            ),
+
+            "Image_URL": (
+                product.Image_URL
+                if product else None
+            ),
+
+            "Quantity": transaction.Quantity,
+
+            "Unit_Price": float(
+                transaction.Unit_Price
+            ) if transaction.Unit_Price is not None else 0.0,
+
+            "Subtotal": float(
+                transaction.Subtotal
+            ) if transaction.Subtotal is not None else 0.0,
+
+            "Shipping_Method": transaction.Shipping_Method,
+
+            "Shipping_Charge": float(
+                transaction.Shipping_Charge
+            ) if transaction.Shipping_Charge is not None else 0.0,
+
+            "Total_Amount": float(
+                transaction.Total_Amount
+            ) if transaction.Total_Amount is not None else 0.0,
+
+            "Payment_Method": transaction.Payment_Method,
+
+            "Order_Status": transaction.Order_Status,
+
+            "Order_Date": (
+                transaction.Order_Date.isoformat()
+                if transaction.Order_Date
+                else None
+            ),
+
+            "Delivery_Date": (
+                transaction.Delivery_Date.isoformat()
+                if transaction.Delivery_Date
+                else None
+            )
+        })
+
+    return result
