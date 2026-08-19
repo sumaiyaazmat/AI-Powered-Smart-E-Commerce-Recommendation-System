@@ -41,3 +41,4 @@ class CheckoutResponse(BaseModel):
     total_amount: float
     payment_method: str
     items_count: int
+    transaction_ids: list[str]

@@ -100,7 +100,10 @@ def checkout(
                 detail=f"Product {cart_item.Product_ID} not found"
             )
 
-        # Check stock
+        # --------------------------------------------------
+        # CHECK STOCK
+        # --------------------------------------------------
+
         if product.Stock < cart_item.Quantity:
             raise HTTPException(
                 status_code=400,
@@ -110,7 +113,10 @@ def checkout(
                 )
             )
 
-        # Product subtotal
+        # --------------------------------------------------
+        # PRODUCT SUBTOTAL
+        # --------------------------------------------------
+
         item_subtotal = (
             float(product.Price) *
             cart_item.Quantity
@@ -144,6 +150,12 @@ def checkout(
     # 6. CREATE TRANSACTIONS
     # ------------------------------------------------------
 
+    # Store all transaction IDs created during this checkout.
+    # One checkout can contain multiple products, therefore
+    # multiple transaction records can be created.
+
+    transaction_ids = []
+
     allocated_shipping = 0.0
 
     for index, item_data in enumerate(cart_products):
@@ -157,11 +169,14 @@ def checkout(
         # --------------------------------------------------
 
         if shipping_charge == 0:
+
             item_shipping = 0.0
 
         elif index == len(cart_products) - 1:
+
             # Last item gets remaining amount
             # to avoid rounding differences
+
             item_shipping = round(
                 shipping_charge -
                 allocated_shipping,
@@ -169,7 +184,9 @@ def checkout(
             )
 
         else:
+
             # Proportional shipping
+
             item_shipping = round(
                 shipping_charge *
                 (item_subtotal / total_subtotal),
@@ -183,7 +200,8 @@ def checkout(
         # --------------------------------------------------
 
         line_total = round(
-            item_subtotal + item_shipping,
+            item_subtotal +
+            item_shipping,
             2
         )
 
@@ -235,6 +253,14 @@ def checkout(
         db.add(transaction)
 
         # --------------------------------------------------
+        # SAVE TRANSACTION ID
+        # --------------------------------------------------
+
+        transaction_ids.append(
+            transaction.Transaction_ID
+        )
+
+        # --------------------------------------------------
         # REDUCE PRODUCT STOCK
         # --------------------------------------------------
 
@@ -272,5 +298,7 @@ def checkout(
             checkout_data.Payment_Method
         ),
 
-        items_count=items_count
+        items_count=items_count,
+
+        transaction_ids=transaction_ids
     )

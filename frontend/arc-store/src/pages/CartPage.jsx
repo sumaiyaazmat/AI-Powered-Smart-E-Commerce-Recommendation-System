@@ -125,6 +125,50 @@ export default function CartPage() {
         'CHECKOUT SUCCESS:',
         response
       );
+      // ------------------------------------------------------
+// DOWNLOAD TRANSACTION SLIP
+// ------------------------------------------------------
+
+const transactionIds =
+  response.transaction_ids.join(',');
+
+const pdfResponse = await fetch(
+  `http://127.0.0.1:8000/transactions/slip?transaction_ids=${encodeURIComponent(
+    transactionIds
+  )}`
+);
+
+if (!pdfResponse.ok) {
+  throw new Error(
+    'Transaction slip could not be generated.'
+  );
+}
+
+const pdfBlob = await pdfResponse.blob();
+
+const pdfUrl = window.URL.createObjectURL(
+  pdfBlob
+);
+
+const downloadLink =
+  document.createElement('a');
+
+downloadLink.href = pdfUrl;
+
+downloadLink.download =
+  'Transaction_Slip.pdf';
+
+document.body.appendChild(
+  downloadLink
+);
+
+downloadLink.click();
+
+downloadLink.remove();
+
+window.URL.revokeObjectURL(
+  pdfUrl
+);
 
       // ------------------------------------------------------
       // Refresh cart from backend
