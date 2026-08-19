@@ -1,23 +1,74 @@
+
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, Instagram, Twitter, Facebook } from 'lucide-react';
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Send,
+  Instagram,
+  Twitter,
+  Facebook
+} from 'lucide-react';
+
 import Button from '../components/ui/Button';
 import { useToast } from '../context/ToastContext';
+import { apiRequest } from '../services/api';
 
 export default function ContactPage() {
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
+  const [loading, setLoading] = useState(false);
+
   const { showToast } = useToast();
 
-  const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+  const update = (key) => (e) => {
+    setForm((f) => ({
+      ...f,
+      [key]: e.target.value
+    }));
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    showToast('Message sent. We\u2019ll get back to you within a day.');
-    setForm({ name: '', email: '', subject: '', message: '' });
+
+    try {
+      setLoading(true);
+
+      await apiRequest('/contact', {
+        method: 'POST',
+        body: JSON.stringify(form),
+      });
+
+      showToast(
+        'Message sent. We’ll get back to you within a day.'
+      );
+
+      setForm({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
+
+    } catch (error) {
+      showToast(
+        error.message || 'Failed to send message.'
+      );
+
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="container contact-page">
+
       <motion.div
         className="section__head"
         initial={{ opacity: 0, y: 16 }}
@@ -25,10 +76,14 @@ export default function ContactPage() {
         transition={{ duration: 0.4 }}
       >
         <span className="eyebrow">Get in touch</span>
-        <h1>We reply to real questions with real answers</h1>
+
+        <h1>
+          We reply to real questions with real answers
+        </h1>
       </motion.div>
 
       <div className="contact-grid">
+
         <motion.form
           className="contact-form"
           onSubmit={handleSubmit}
@@ -36,34 +91,77 @@ export default function ContactPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, delay: 0.05 }}
         >
+
           <label className="field">
             <span>Name</span>
+
             <div className="field__input">
-              <input required value={form.name} onChange={update('name')} placeholder="Your name" />
+              <input
+                required
+                value={form.name}
+                onChange={update('name')}
+                placeholder="Your name"
+              />
             </div>
           </label>
+
+
           <label className="field">
             <span>Email</span>
+
             <div className="field__input">
-              <input type="email" required value={form.email} onChange={update('email')} placeholder="you@email.com" />
+              <input
+                type="email"
+                required
+                value={form.email}
+                onChange={update('email')}
+                placeholder="you@email.com"
+              />
             </div>
           </label>
+
+
           <label className="field">
             <span>Subject</span>
+
             <div className="field__input">
-              <input required value={form.subject} onChange={update('subject')} placeholder="Order question, partnership, feedback…" />
+              <input
+                required
+                value={form.subject}
+                onChange={update('subject')}
+                placeholder="Order question, partnership, feedback…"
+              />
             </div>
           </label>
+
+
           <label className="field">
             <span>Message</span>
+
             <div className="field__input field__input--textarea">
-              <textarea required rows={5} value={form.message} onChange={update('message')} placeholder="Tell us what's going on" />
+              <textarea
+                required
+                rows={5}
+                value={form.message}
+                onChange={update('message')}
+                placeholder="Tell us what's going on"
+              />
             </div>
           </label>
-          <Button type="submit" variant="primary" size="lg" icon={Send}>
-            Send Message
+
+
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            icon={Send}
+            disabled={loading}
+          >
+            {loading ? 'Sending...' : 'Send Message'}
           </Button>
+
         </motion.form>
+
 
         <motion.aside
           className="contact-info"
@@ -71,25 +169,57 @@ export default function ContactPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
+
           <div className="contact-info__item">
             <Mail size={18} />
-            <div><strong>Email</strong><span>hello@arcmarket.com</span></div>
+
+            <div>
+              <strong>Email</strong>
+              <span>hello@arcmarket.com</span>
+            </div>
           </div>
+
+
           <div className="contact-info__item">
             <Phone size={18} />
-            <div><strong>Phone</strong><span>+1 (555) 018-2043</span></div>
+
+            <div>
+              <strong>Phone</strong>
+              <span>+1 (555) 018-2043</span>
+            </div>
           </div>
+
+
           <div className="contact-info__item">
             <MapPin size={18} />
-            <div><strong>Location</strong><span>212 Market Street, Austin, TX</span></div>
+
+            <div>
+              <strong>Location</strong>
+              <span>212 Market Street, Austin, TX</span>
+            </div>
           </div>
+
+
           <div className="contact-info__social">
-            <a href="#" aria-label="Instagram"><Instagram size={18} /></a>
-            <a href="#" aria-label="Twitter"><Twitter size={18} /></a>
-            <a href="#" aria-label="Facebook"><Facebook size={18} /></a>
+
+            <a href="#" aria-label="Instagram">
+              <Instagram size={18} />
+            </a>
+
+            <a href="#" aria-label="Twitter">
+              <Twitter size={18} />
+            </a>
+
+            <a href="#" aria-label="Facebook">
+              <Facebook size={18} />
+            </a>
+
           </div>
+
         </motion.aside>
+
       </div>
     </div>
   );
 }
+

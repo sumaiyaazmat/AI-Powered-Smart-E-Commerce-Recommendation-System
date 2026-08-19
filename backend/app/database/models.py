@@ -201,3 +201,46 @@ class CartItem(Base):
         nullable=False
     )
 
+# ==========================================================
+# CONTACT MESSAGES TABLE
+# ==========================================================
+
+class ContactMessage(Base):
+
+    __tablename__ = "contact_messages"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    name = Column(
+        String(255),
+        nullable=False
+    )
+
+    email = Column(
+        String(255),
+        nullable=False
+    )
+
+    subject = Column(
+        String(255),
+        nullable=False
+    )
+
+    message = Column(
+        Text,
+        nullable=False
+    )
+
+    status = Column(
+        String(30),
+        default="New"
+    )
+
+    created_at = Column(
+        DateTime,
+        server_default=func.now()
+    )

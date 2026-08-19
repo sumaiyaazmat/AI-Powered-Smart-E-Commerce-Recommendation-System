@@ -8,6 +8,7 @@ from app.routes.auth import router as auth_router
 from app.routes.cart import router as cart_router
 from app.routes.checkout import router as checkout_router
 from app.routes.transaction import router as transaction_router
+from app.routes.contact import router as contact_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -17,6 +18,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
+
+# ==========================================================
+# CORS
+# ==========================================================
 
 app.add_middleware(
     CORSMiddleware,
@@ -43,6 +48,7 @@ app.include_router(auth_router)
 app.include_router(cart_router)
 app.include_router(checkout_router)
 app.include_router(transaction_router)
+app.include_router(contact_router)
 
 
 # ==========================================================
